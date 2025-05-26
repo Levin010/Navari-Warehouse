@@ -1,0 +1,69 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "autoincrement",
+ "creation": "2025-05-25 19:53:26.291140",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "product",
+  "warehouse_section",
+  "date",
+  "quantity",
+  "rate"
+ ],
+ "fields": [
+  {
+   "fieldname": "product",
+   "fieldtype": "Data",
+   "label": "Product"
+  },
+  {
+   "fieldname": "warehouse_section",
+   "fieldtype": "Data",
+   "label": "Warehouse Section"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Datetime",
+   "label": "Date"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "label": "Quantity"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Rate"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-05-25 19:58:45.800257",
+ "modified_by": "Administrator",
+ "module": "Navari Warehouse",
+ "name": "Stock Ledger Entry",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

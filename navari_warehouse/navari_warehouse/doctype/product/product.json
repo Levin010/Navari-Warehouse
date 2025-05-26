@@ -1,0 +1,117 @@
+{
+ "actions": [],
+ "allow_guest_to_view": 1,
+ "allow_rename": 1,
+ "autoname": "field:product_code",
+ "creation": "2025-05-22 15:10:38.927420",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "product_code",
+  "product_name",
+  "product_image",
+  "column_break_tkki",
+  "product_type",
+  "rate",
+  "section_break_lre5",
+  "description",
+  "route",
+  "published"
+ ],
+ "fields": [
+  {
+   "fieldname": "product_code",
+   "fieldtype": "Data",
+   "label": "Product Code",
+   "read_only": 1,
+   "show_on_timeline": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "product_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Product Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_tkki",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "product_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Product Type",
+   "options": "Computers\nSmartphones\nAudio Devices\nTablets\nHardware Parts",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_lre5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "product_image",
+   "fieldtype": "Attach Image",
+   "label": "Product Image"
+  },
+  {
+   "fieldname": "route",
+   "fieldtype": "Data",
+   "label": "Route"
+  },
+  {
+   "default": "1",
+   "fieldname": "published",
+   "fieldtype": "Check",
+   "label": "Published"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Rate (KES)",
+   "non_negative": 1,
+   "precision": "2",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "has_web_view": 1,
+ "index_web_pages_for_search": 1,
+ "is_published_field": "published",
+ "links": [],
+ "modified": "2025-05-25 14:08:03.218623",
+ "modified_by": "Administrator",
+ "module": "Navari Warehouse",
+ "name": "Product",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "route": "products",
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "product_name",
+ "track_changes": 1
+}

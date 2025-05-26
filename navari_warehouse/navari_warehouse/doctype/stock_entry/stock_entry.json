@@ -1,0 +1,119 @@
+{
+ "actions": [],
+ "allow_guest_to_view": 1,
+ "allow_rename": 1,
+ "autoname": "field:entry_code",
+ "creation": "2025-05-23 20:44:46.927000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "stock_entry_type",
+  "entry_date",
+  "entry_code",
+  "from_section",
+  "to_section",
+  "product",
+  "total_quantity",
+  "total_amount",
+  "route",
+  "published"
+ ],
+ "fields": [
+  {
+   "fieldname": "stock_entry_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Stock Entry Type",
+   "options": "Receipt\nConsume\nTransfer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "entry_date",
+   "fieldtype": "Datetime",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Entry Date"
+  },
+  {
+   "fieldname": "entry_code",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Entry Code",
+   "unique": 1
+  },
+  {
+   "fieldname": "from_section",
+   "fieldtype": "Link",
+   "label": "From Section",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "to_section",
+   "fieldtype": "Link",
+   "label": "To Section",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "product",
+   "fieldtype": "Table",
+   "label": "Products",
+   "options": "Stock Entry Products",
+   "reqd": 1
+  },
+  {
+   "fieldname": "route",
+   "fieldtype": "Data",
+   "label": "Route"
+  },
+  {
+   "default": "1",
+   "fieldname": "published",
+   "fieldtype": "Check",
+   "label": "Published"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Amount (KES)",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_quantity",
+   "fieldtype": "Int",
+   "label": "Total Quantity",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "has_web_view": 1,
+ "index_web_pages_for_search": 1,
+ "is_published_field": "published",
+ "links": [],
+ "modified": "2025-05-25 13:00:34.902593",
+ "modified_by": "Administrator",
+ "module": "Navari Warehouse",
+ "name": "Stock Entry",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "route": "entries",
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,198 @@
+{% extends "templates/includes/base.html" %}
+
+{% block content %}
+
+<div style="padding: 30px; background-color: #f8f9fa; min-height: 100vh;">
+    <h1 style="font-size: 24px; font-weight: 600; color: #343a40; margin-bottom: 8px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">Stock Entry</h1>
+    
+    <div style="background: white; border-radius: 8px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); max-width: 1200px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #e9ecef;">
+            <div>
+                <div style="font-size: 18px; font-weight: 600; color: #343a40;">Create a Stock Entry</div>
+            </div>
+        </div>
+        
+        <form id="stockEntryForm">
+            <div style="display: flex; gap: 20px; margin-bottom: 20px; align-items: center;">
+                <div style="flex: 1;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6c757d; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Stock Entry Type *</label>
+                    <select name="stock_entry_type" required style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px; background-color: #f8f9fa; transition: border-color 0.2s, background-color 0.2s;" onfocus="this.style.borderColor='#4472c4'; this.style.backgroundColor='white'" onblur="this.style.borderColor='#ced4da'; this.style.backgroundColor='#f8f9fa'">
+                        <option value="">Select Type</option>
+                        <option value="Receipt">Receipt</option>
+                        <option value="Issue">COnsume</option>
+                        <option value="Transfer">Transfer</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 20px; margin-bottom: 20px; align-items: center;">
+                <div style="flex: 1;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6c757d; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">From Section</label>
+                    <input type="text" name="from_section" placeholder="Enter from section" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px; background-color: #f8f9fa; transition: border-color 0.2s, background-color 0.2s;" onfocus="this.style.borderColor='#4472c4'; this.style.backgroundColor='white'" onblur="this.style.borderColor='#ced4da'; this.style.backgroundColor='#f8f9fa'">
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 20px; margin-bottom: 20px; align-items: center;">
+                <div style="flex: 1;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6c757d; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">To Section</label>
+                    <input type="text" name="to_section" placeholder="Enter to section" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px; background-color: #f8f9fa; transition: border-color 0.2s, background-color 0.2s;" onfocus="this.style.borderColor='#4472c4'; this.style.backgroundColor='white'" onblur="this.style.borderColor='#ced4da'; this.style.backgroundColor='#f8f9fa'">
+                </div>
+            </div>
+            
+            <div style="margin: 24px 0;">
+                <div style="font-size: 14px; font-weight: 500; color: #495057; margin-bottom: 12px;">Products</div>
+                <table style="width: 100%; border-collapse: collapse; background: white; border: 1px solid #dee2e6; border-radius: 4px; overflow: hidden;">
+                    <thead>
+                        <tr>
+                            <th style="background-color: #f8f9fa; padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #495057; border-bottom: 1px solid #dee2e6; text-transform: uppercase; letter-spacing: 0.5px; width: 40px;"></th>
+                            <th style="background-color: #f8f9fa; padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #495057; border-bottom: 1px solid #dee2e6; text-transform: uppercase; letter-spacing: 0.5px; width: 60px;">No.</th>
+                            <th style="background-color: #f8f9fa; padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #495057; border-bottom: 1px solid #dee2e6; text-transform: uppercase; letter-spacing: 0.5px;">Product *</th>
+                            <th style="background-color: #f8f9fa; padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #495057; border-bottom: 1px solid #dee2e6; text-transform: uppercase; letter-spacing: 0.5px; width: 120px;">Quantity *</th>
+                            <th style="background-color: #f8f9fa; padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #495057; border-bottom: 1px solid #dee2e6; text-transform: uppercase; letter-spacing: 0.5px; width: 40px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <tr onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
+                            <td style="padding: 12px; border-bottom: 1px solid #f1f3f4; vertical-align: middle;">
+                                <input type="checkbox" style="width: 16px; height: 16px; margin: 0;">
+                            </td>
+                            <td style="padding: 12px; border-bottom: 1px solid #f1f3f4; vertical-align: middle; width: 60px; text-align: center; font-weight: 500; color: #6c757d;">1</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #f1f3f4; vertical-align: middle;">
+                                <input type="text" name="products[0][product]" placeholder="Enter product name" style="border: none; background: transparent; width: 100%; padding: 4px 0; font-size: 14px;" onfocus="this.style.outline='1px solid #4472c4'; this.style.background='white'; this.style.padding='4px 8px'; this.style.borderRadius='2px'" onblur="this.style.outline='none'; this.style.background='transparent'; this.style.padding='4px 0'; this.style.borderRadius='0'">
+                            </td>
+                            <td style="padding: 12px; border-bottom: 1px solid #f1f3f4; vertical-align: middle;">
+                                <input type="number" name="products[0][quantity]" placeholder="0" min="0" onchange="updateTotals()" style="width: 80px; text-align: center; border: none; background: transparent; padding: 4px; font-size: 14px;" onfocus="this.style.outline='1px solid #4472c4'; this.style.background='white'; this.style.borderRadius='2px'" onblur="this.style.outline='none'; this.style.background='transparent'; this.style.borderRadius='0'">
+                            </td>
+                            <td style="padding: 12px; border-bottom: 1px solid #f1f3f4; vertical-align: middle;">
+                                <button type="button" onclick="removeRow(this)" style="background: none; border: none; color: #dc3545; cursor: pointer; font-size: 16px;">✕</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" onclick="addRow()" style="background: none; border: none; color: #4472c4; font-size: 14px; cursor: pointer; padding: 8px 0; margin-top: 8px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Add Row</button>
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+                <button onclick="saveStockEntry()" style="background-color: #343a40; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-size: 14px; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#23272b'" onmouseout="this.style.backgroundColor='#343a40'">Save</button>
+            </div>
+            
+        </form>
+    </div>
+</div>
+
+<script>
+    let rowCounter = 1;
+    
+    function addRow() {
+        const tbody = document.getElementById('productsTableBody');
+        const newRow = document.createElement('tr');
+        newRow.onmouseover = function() { this.style.backgroundColor = '#f8f9fa'; };
+        newRow.onmouseout = function() { this.style.backgroundColor = 'white'; };
+        
+        newRow.innerHTML = `
+            <td style="padding: 12px; border-bottom: 1px solid #f1f3f4; vertical-align: middle;">
+                <input type="checkbox" style="width: 16px; height: 16px; margin: 0;">
+            </td>
+            <td style="padding: 12px; border-bottom: 1px solid #f1f3f4; vertical-align: middle; width: 60px; text-align: center; font-weight: 500; color: #6c757d;">${rowCounter + 1}</td>
+            <td style="padding: 12px; border-bottom: 1px solid #f1f3f4; vertical-align: middle;">
+                <input type="text" name="products[${rowCounter}][product]" placeholder="Enter product name" style="border: none; background: transparent; width: 100%; padding: 4px 0; font-size: 14px;" onfocus="this.style.outline='1px solid #4472c4'; this.style.background='white'; this.style.padding='4px 8px'; this.style.borderRadius='2px'" onblur="this.style.outline='none'; this.style.background='transparent'; this.style.padding='4px 0'; this.style.borderRadius='0'">
+            </td>
+            <td style="padding: 12px; border-bottom: 1px solid #f1f3f4; vertical-align: middle;">
+                <input type="number" name="products[${rowCounter}][quantity]" placeholder="0" min="0" onchange="updateTotals()" style="width: 80px; text-align: center; border: none; background: transparent; padding: 4px; font-size: 14px;" onfocus="this.style.outline='1px solid #4472c4'; this.style.background='white'; this.style.borderRadius='2px'" onblur="this.style.outline='none'; this.style.background='transparent'; this.style.borderRadius='0'">
+            </td>
+            <td style="padding: 12px; border-bottom: 1px solid #f1f3f4; vertical-align: middle;">
+                <button type="button" onclick="removeRow(this)" style="background: none; border: none; color: #dc3545; cursor: pointer; font-size: 16px;">✕</button>
+            </td>
+        `;
+        tbody.appendChild(newRow);
+        rowCounter++;
+        updateRowNumbers();
+    }
+    
+    // Remove row from products table
+    function removeRow(button) {
+        const row = button.closest('tr');
+        row.remove();
+        updateRowNumbers();
+        updateTotals();
+    }
+    
+    // Update row numbers
+    function updateRowNumbers() {
+        const rows = document.querySelectorAll('#productsTableBody tr');
+        rows.forEach((row, index) => {
+            const numberCell = row.querySelector('td:nth-child(2)');
+            if (numberCell) {
+                numberCell.textContent = index + 1;
+            }
+        });
+    }
+    
+    // Update totals
+    function updateTotals() {
+        const quantityInputs = document.querySelectorAll('input[name*="[quantity]"]');
+        let totalQuantity = 0;
+        
+        quantityInputs.forEach(input => {
+            const value = parseInt(input.value) || 0;
+            totalQuantity += value;
+        });
+        
+        document.getElementById('totalQuantity').textContent = totalQuantity;
+        document.getElementById('totalAmount').textContent = 'KES 0.00';
+    }
+    
+    // Save stock entry function
+    function saveStockEntry() {
+        const form = document.getElementById('stockEntryForm');
+        const formData = new FormData(form);
+        
+        // Collect products data
+        const products = [];
+        const productInputs = document.querySelectorAll('input[name*="[product]"]');
+        const quantityInputs = document.querySelectorAll('input[name*="[quantity]"]');
+        
+        for (let i = 0; i < productInputs.length; i++) {
+            const product = productInputs[i].value.trim();
+            const quantity = parseInt(quantityInputs[i].value) || 0;
+            
+            if (product && quantity > 0) {
+                products.push({
+                    product: product,
+                    quantity: quantity
+                });
+            }
+        }
+        
+        // Prepare data for Frappe API
+        const stockEntryData = {
+            doctype: 'Stock Entry',
+            stock_entry_type: formData.get('stock_entry_type'),
+            from_section: formData.get('from_section'),
+            to_section: formData.get('to_section'),
+            products: products,
+            published: formData.has('published') ? 1 : 0
+        };
+        
+        // Frappe API call (uncomment and modify for your setup)
+        /*
+        frappe.call({
+            method: 'frappe.client.insert',
+            args: {
+                doc: stockEntryData
+            },
+            callback: function(response) {
+                if (response.message) {
+                    frappe.msgprint('Stock Entry saved successfully');
+                    window.location.reload();
+                }
+            }
+        });
+        */
+        
+        // For now, show alert with data
+        alert('Stock Entry data prepared:\n' + JSON.stringify(stockEntryData, null, 2));
+    }
+    
+    
+</script>
+{% endblock %}
