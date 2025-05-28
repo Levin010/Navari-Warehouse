@@ -14,45 +14,41 @@ class StockEntry(WebsiteGenerator):
             self.entry_code = self.generate_unique_entry_code()
         if not self.entry_date:
             self.entry_date = now_datetime()
+        self.set_total_amount()
 
     def before_save(self):
-        self.validate_products()
-        self.calculate_totals()
+        self.set_total_amount()
+        if self.is_new():
+            self.create_stock_ledger_entry()
 
     def generate_unique_entry_code(self):
         while True:
             hex_code = secrets.token_hex(4).upper()
-
             if not frappe.db.exists("Stock Entry", {"entry_code": hex_code}):
                 return hex_code
 
-    def validate_products(self):
+    def set_total_amount(self):
+        if self.product and self.quantity:
+            rate = frappe.db.get_value("Product", self.product, "rate") or 0
+            self.total_amount = flt(rate) * flt(self.quantity)
+        else:
+            self.total_amount = 0
 
-        if not self.product:
-            frappe.throw(_("Please add at least one product to the Stock Entry"))
+    def create_stock_ledger_entry(self):
 
-        for product in self.product:
-            if not product.product:
-                frappe.throw(_("Product is required in row {0}").format(product.idx))
-            if flt(product.quantity) <= 0:
-                frappe.throw(
-                    _("Quantity must be greater than 0 in row {0}").format(product.idx)
-                )
+        rate = frappe.db.get_value("Product", self.product, "rate") or 0
 
-    def calculate_totals(self):
+        sle = frappe.get_doc(
+            {
+                "doctype": "Stock Ledger Entry",
+                "product": self.product,
+                "warehouse_section": self.to_section,
+                "quantity": self.quantity,
+                "rate": rate,
+                "date": now_datetime(),
+                "reference_doctype": "Stock Entry",
+                "reference_name": self.name,
+            }
+        )
 
-        total_quantity = 0
-        total_amount = 0
-
-        for product in self.product:
-
-            product_doc = frappe.get_doc("Product", product.product)
-            rate = flt(product_doc.rate) if product_doc.rate else 0
-
-            product.amount = flt(product.quantity) * rate
-
-            total_quantity += flt(product.quantity)
-            total_amount += flt(product.amount)
-
-        self.total_quantity = total_quantity
-        self.total_amount = total_amount
+        sle.insert(ignore_permissions=True)

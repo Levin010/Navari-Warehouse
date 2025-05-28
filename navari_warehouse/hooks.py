@@ -236,3 +236,15 @@ app_license = "mit"
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
+
+
+# Guest can access these API routes
+guest_access = [
+    "/api/resource/Product",
+    "/api/method/navari_warehouse.api.product.guest_upload_file",
+]
+
+# Disable CSRF on custom methods if needed
+csrf_exempt_methods = [
+    "/api/method/navari_warehouse.api.product.guest_upload_file",
+]
