@@ -7,21 +7,18 @@
  "engine": "InnoDB",
  "field_order": [
   "product",
-  "warehouse_section",
+  "transaction_type",
+  "to_section",
   "date",
-  "quantity",
+  "quantity_in",
   "rate"
  ],
  "fields": [
   {
    "fieldname": "product",
    "fieldtype": "Data",
-   "label": "Product"
-  },
-  {
-   "fieldname": "warehouse_section",
-   "fieldtype": "Data",
-   "label": "Warehouse Section"
+   "label": "Product",
+   "reqd": 1
   },
   {
    "fieldname": "date",
@@ -29,21 +26,33 @@
    "label": "Date"
   },
   {
-   "fieldname": "quantity",
-   "fieldtype": "Int",
-   "label": "Quantity"
-  },
-  {
    "fieldname": "rate",
    "fieldtype": "Currency",
    "label": "Rate"
+  },
+  {
+   "fieldname": "transaction_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Transaction Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "to_section",
+   "fieldtype": "Data",
+   "label": "To Section"
+  },
+  {
+   "fieldname": "quantity_in",
+   "fieldtype": "Int",
+   "label": "Quantity In"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-25 19:58:45.800257",
- "modified_by": "Administrator",
+ "modified": "2025-05-28 14:42:32.155586",
+ "modified_by": "levdev78@gmail.com",
  "module": "Navari Warehouse",
  "name": "Stock Ledger Entry",
  "naming_rule": "Autoincrement",
