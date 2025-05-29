@@ -56,7 +56,6 @@ $(document).ready(function() {
 
         var validationPromises = [];
 
-        // Check source stock for Consume and Transfer
         if (stockEntryType === 'Consume' || stockEntryType === 'Transfer') {
             var sourcePromise = $.ajax({
                 url: '/api/resource/Warehouse Product Stock',
@@ -90,7 +89,6 @@ $(document).ready(function() {
             validationPromises.push(sourcePromise);
         }
 
-        // Check destination capacity for Transfer and Receipt
         if (stockEntryType === 'Transfer' || stockEntryType === 'Receipt') {
             var destinationPromise = $.ajax({
                 url: '/api/resource/Warehouse Product Stock',
@@ -163,43 +161,55 @@ $(document).ready(function() {
             saveButton.text('Saving...').prop('disabled', true);
 
             $.ajax({
-                url: '/api/resource/Stock Entry',
-                method: 'POST',
-                contentType: 'application/json',
-                headers: {
-                    'Authorization': 'token 434802dcea39ae6:fbeac41386fcc9f',
-                },
-                data: JSON.stringify(formData),
+                url: '/api/method/navari_warehouse.www.api.get_token.get_api_token',
+                method: 'GET',
                 dataType: 'json'
             })
-            .done(function(response) {
-                showNotification('New Stock Entry created successfully!', 'success');
-                storeNotification('New Stock Entry created successfully!', 'success');
+            .done(function(tokenResponse) {
+                $.ajax({
+                    url: '/api/resource/Stock Entry',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    headers: {
+                        'Authorization': 'token ' + tokenResponse.message,
+                    },
+                    data: JSON.stringify(formData),
+                    dataType: 'json'
+                })
+                .done(function(response) {
+                    showNotification('New Stock Entry created successfully!', 'success');
+                    storeNotification('New Stock Entry created successfully!', 'success');
 
-                
-                $('#stockEntryType').val('');
-                $('#fromSection').val('');
-                $('#toSection').val('');
-                $('#product').val('');
-                $('#quantity').val('');
+                    
+                    $('#stockEntryType').val('');
+                    $('#fromSection').val('');
+                    $('#toSection').val('');
+                    $('#product').val('');
+                    $('#quantity').val('');
+                })
+                .fail(function(xhr, status, error) {
+                    console.error('Error creating Stock Entry:', xhr.responseText);
+                    
+                    var errorMessage = 'Failed to create Stock Entry';
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.message) {
+                            errorMessage = response.message;
+                        } else if (response.exc) {
+                            errorMessage = 'Server error occurred';
+                        }
+                    } catch (e) {
+                    }
+                    
+                    showNotification(errorMessage, 'error');
+                })
+                .always(function() {
+                    saveButton.text(originalText).prop('disabled', false);
+                });
             })
             .fail(function(xhr, status, error) {
-                console.error('Error creating Stock Entry:', xhr.responseText);
-                
-                var errorMessage = 'Failed to create Stock Entry';
-                try {
-                    var response = JSON.parse(xhr.responseText);
-                    if (response.message) {
-                        errorMessage = response.message;
-                    } else if (response.exc) {
-                        errorMessage = 'Server error occurred';
-                    }
-                } catch (e) {
-                }
-                
-                showNotification(errorMessage, 'error');
-            })
-            .always(function() {
+                console.error('Error fetching API token:', xhr.responseText);
+                showNotification('Failed to retrieve API token', 'error');
                 saveButton.text(originalText).prop('disabled', false);
             });
         });
