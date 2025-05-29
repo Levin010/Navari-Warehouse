@@ -1,0 +1,115 @@
+{% extends "templates/includes/base.html" %}
+
+{% block content %}
+
+<div style="max-width: 1200px; margin: 30px auto; background-color: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 30px;">
+    <h2 style="color: #333; font-weight: 700; margin-bottom: 30px; border-bottom: 2px solid #007bff; padding-bottom: 10px;">Stock Balance Report</h2>
+    
+    <div style="margin-bottom: 20px; padding: 20px; background-color: #f8f9fa; border-radius: 5px;">
+        <label for="balanceDate" style="font-weight: bold; color: #333; margin-right: 10px;">Balance as of Date:</label>
+        <input type="date" id="balanceDate" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+        <button id="refreshBalance" style="margin-left: 15px; padding: 8px 16px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+            Refresh Report
+        </button>
+    </div>
+    
+    <div id="loadingIndicator" style="text-align: center; padding: 40px; color: #666; font-size: 16px;">
+        Loading stock balance report...
+    </div>
+    
+    <div id="errorMessage" style="display: none; padding: 15px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; margin-bottom: 20px;">
+        Failed to load stock balance report. Please try again.
+    </div>
+    
+    <div id="tableContainer" style="display: none; overflow-x: auto;">
+        <div id="reportSummary" style="margin-bottom: 15px; padding: 10px; background-color: #e7f3ff; border-radius: 4px; color: #0c5aa6;">
+            <strong>Report Date:</strong> <span id="reportDateDisplay">-</span> | 
+            <strong>Total Products:</strong> <span id="totalProducts">0</span> | 
+            <strong>Total Value:</strong> <span id="totalValue">0.00</span>
+        </div>
+        
+        <table id="balanceTable" style="width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white; border-radius: 4px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <thead>
+                <tr style="background-color: #007bff; color: white;">
+                    <th style="padding: 15px 12px; text-align: left; font-weight: bold; border-bottom: 2px solid #0056b3;">Product</th>
+                    <th style="padding: 15px 12px; text-align: right; font-weight: bold; border-bottom: 2px solid #0056b3;">Total Quantity</th>
+                    <th style="padding: 15px 12px; text-align: left; font-weight: bold; border-bottom: 2px solid #0056b3;">Warehouse Sections</th>
+                    <th style="padding: 15px 12px; text-align: right; font-weight: bold; border-bottom: 2px solid #0056b3;">Current Rate</th>
+                    <th style="padding: 15px 12px; text-align: right; font-weight: bold; border-bottom: 2px solid #0056b3;">Total Value</th>
+                </tr>
+            </thead>
+            <tbody id="balanceTableBody">
+            </tbody>
+        </table>
+    </div>
+    
+    <div id="noDataMessage" style="display: none; text-align: center; padding: 40px; color: #666; font-size: 16px; font-style: italic;">
+        No stock balance data found for the selected date.
+    </div>
+</div>
+
+<style>
+    #balanceTable tbody tr {
+        transition: background-color 0.2s ease;
+    }
+    
+    #balanceTable tbody tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+    
+    #balanceTable tbody tr:hover {
+        background-color: #e3f2fd;
+    }
+    
+    #balanceTable tbody td {
+        padding: 12px;
+        border-bottom: 1px solid #dee2e6;
+        color: #333;
+    }
+    
+    .warehouse-sections {
+        font-size: 0.9em;
+        color: #666;
+        max-width: 200px;
+        word-wrap: break-word;
+    }
+    
+    .total-quantity {
+        font-weight: bold;
+        color: #28a745;
+    }
+    
+    .zero-quantity {
+        color: #dc3545;
+        font-style: italic;
+    }
+    
+    .current-rate, .total-value {
+        font-weight: 500;
+    }
+    
+    #refreshBalance:hover {
+        background-color: #0056b3;
+    }
+    
+    @media (max-width: 768px) {
+        #balanceTable {
+            font-size: 14px;
+        }
+        
+        #balanceTable th,
+        #balanceTable td {
+            padding: 8px;
+        }
+        
+        .warehouse-sections {
+            max-width: 150px;
+        }
+    }
+</style>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/assets/navari_warehouse/js/reports/stock_balance.js"></script>
+{% endblock %}
