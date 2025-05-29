@@ -1,15 +1,12 @@
 $(document).ready(function() {
-    // Handle file input change
     $('#productImage').on('change', function() {
         const fileName = this.files[0] ? this.files[0].name : 'No file selected';
         $('#imageFileName').text(fileName);
     });
 
-    // Handle form submission
     $('#productForm').on('submit', function(e) {
         e.preventDefault();
         
-        // Get form data
         const formData = new FormData();
         const productName = $('#productName').val().trim();
         const productType = $('#productType').val();
@@ -17,7 +14,6 @@ $(document).ready(function() {
         const description = $('#description').val().trim();
         const imageFile = $('#productImage')[0].files[0];
         
-        // Validate required fields
         if (!productName) {
             showNotification('Product name is required', 'error');
             return;
@@ -33,12 +29,10 @@ $(document).ready(function() {
             return;
         }
         
-        // Disable submit button and show loading
         const submitBtn = $('button[type="submit"]');
         const originalText = submitBtn.text();
         submitBtn.prop('disabled', true).text('Creating...');
         
-        // Prepare product data
         const productData = {
             product_name: productName,
             product_type: productType,
@@ -46,18 +40,37 @@ $(document).ready(function() {
             description: description
         };
         
-        // If there's an image file, upload it first
-        if (imageFile) {
-            uploadImageAndCreateProduct(imageFile, productData, submitBtn, originalText);
-        } else {
-            createProduct(productData, submitBtn, originalText);
-        }
+        getApiToken(function(token) {
+            if (token) {
+                if (imageFile) {
+                    uploadImageAndCreateProduct(imageFile, productData, token, submitBtn, originalText);
+                } else {
+                    createProduct(productData, token, submitBtn, originalText);
+                }
+            } else {
+                showNotification('Failed to retrieve API token', 'error');
+                resetSubmitButton(submitBtn, originalText);
+            }
+        });
     });
 });
 
-function uploadImageAndCreateProduct(imageFile, productData, submitBtn, originalText) {
-    
+function getApiToken(callback) {
+    $.ajax({
+        url: '/api/method/navari_warehouse.www.api.get_token.get_api_token',
+        method: 'GET',
+        dataType: 'json'
+    })
+    .done(function(tokenResponse) {
+        callback(tokenResponse.message);
+    })
+    .fail(function(xhr, status, error) {
+        console.error('Error fetching API token:', xhr.responseText);
+        callback(null);
+    });
+}
 
+function uploadImageAndCreateProduct(imageFile, productData, token, submitBtn, originalText) {
     const formData = new FormData();
     formData.append('file', imageFile);
     formData.append('is_private', 0);
@@ -70,12 +83,12 @@ function uploadImageAndCreateProduct(imageFile, productData, submitBtn, original
         processData: false,
         contentType: false,
         headers: {
-            'Authorization': 'token 434802dcea39ae6:fbeac41386fcc9f'
+            'Authorization': 'token ' + token
         },
         success: function(response) {
             if (response.message) {
                 productData.product_image = response.message.file_url;
-                createProduct(productData, submitBtn, originalText);
+                createProduct(productData, token, submitBtn, originalText);
             } else {
                 showNotification('Failed to upload image', 'error');
                 resetSubmitButton(submitBtn, originalText);
@@ -89,17 +102,14 @@ function uploadImageAndCreateProduct(imageFile, productData, submitBtn, original
     });
 }
 
-
-function createProduct(productData, submitBtn, originalText) {
-    
-
+function createProduct(productData, token, submitBtn, originalText) {
     $.ajax({
         url: '/api/resource/Product',
         type: 'POST',
         data: JSON.stringify(productData),
         contentType: 'application/json',
         headers: {
-            'Authorization': 'token 434802dcea39ae6:fbeac41386fcc9f'
+            'Authorization': 'token ' + token
         },
         success: function(response) {
             if (response.data) {
@@ -128,7 +138,6 @@ function createProduct(productData, submitBtn, originalText) {
         }
     });
 }
-
 
 function resetSubmitButton(submitBtn, originalText) {
     submitBtn.prop('disabled', false).text(originalText);

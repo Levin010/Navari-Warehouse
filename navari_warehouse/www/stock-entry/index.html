@@ -6,7 +6,6 @@
     <h2 style="color: #333; font-weight: 700; margin-bottom: 30px; border-bottom: 2px solid #007bff; padding-bottom: 10px;">Create Stock Entry</h2>
     
     <form id="stockEntryForm" style="display: flex; flex-direction: column; gap: 20px;">
-        <!-- Stock Entry Type -->
         <div style="display: flex; gap: 20px; flex-wrap: wrap;">
             <div style="flex: 1; min-width: 300px;">
                 <label for="stockEntryType" style="display: block; margin-bottom: 8px; color: #555; font-weight: bold;">
@@ -28,7 +27,6 @@
             </div>
         </div>
 
-        <!-- From Section and To Section -->
         <div style="display: flex; gap: 20px; flex-wrap: wrap;">
             <div style="flex: 1; min-width: 300px;">
                 <label for="fromSection" style="display: block; margin-bottom: 8px; color: #555; font-weight: bold;">
@@ -61,7 +59,6 @@
             </div>
         </div>
 
-        <!-- Product and Quantity Fields -->
         <div style="display: flex; gap: 20px; flex-wrap: wrap;">
             <div style="flex: 2; min-width: 300px;">
                 <label for="product" style="display: block; margin-bottom: 8px; color: #555; font-weight: bold;">
@@ -97,7 +94,6 @@
             </div>
         </div>
 
-        <!-- Submit Button -->
         <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
             <button 
                 type="button"
@@ -116,7 +112,6 @@
     let productsData = [];
     let warehousesData = [];
     
-    // Fetch warehouses from Frappe API using jQuery
     function fetchWarehouses() {
         return $.ajax({
             url: '/api/resource/Warehouse',
@@ -133,7 +128,6 @@
         });
     }
     
-    // Fetch products from Frappe API using jQuery
     function fetchProducts() {
         return $.ajax({
             url: '/api/resource/Product',
@@ -149,13 +143,10 @@
         });
     }
     
-    // Populate warehouse dropdowns
     function populateWarehouseDropdowns() {
-        // Clear existing options
         $('#fromSection').html('<option value="">Select From Section</option>');
         $('#toSection').html('<option value="">Select To Section</option>');
         
-        // Add warehouses to dropdowns
         warehousesData.forEach(function(warehouse) {
             var displayText = warehouse.parent_warehouse 
                 ? warehouse.parent_warehouse + ' - ' + warehouse.section_name 
@@ -165,18 +156,14 @@
             option.val(warehouse.name);
             option.text(displayText);
             
-            // Add to both dropdowns
             $('#fromSection').append(option.clone());
             $('#toSection').append(option.clone());
         });
     }
     
-    // Populate product dropdown
     function populateProductDropdown() {
-        // Clear existing options except the first one
         $('#product').html('<option value="">Select Product</option>');
         
-        // Add products to dropdown
         productsData.forEach(function(product) {
             var option = $('<option></option>');
             option.val(product.name);
@@ -185,9 +172,7 @@
         });
     }
     
-    // Initialize the form when page loads
     $(document).ready(function() {
-        // Fetch both products and warehouses
         Promise.all([fetchProducts(), fetchWarehouses()])
             .then(function() {
                 populateProductDropdown();

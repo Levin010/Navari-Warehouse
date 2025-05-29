@@ -107,14 +107,14 @@ $(document).ready(function() {
                     currentStock = response.data[0].quantity || 0;
                 }
                 console.log('Destination current stock:', currentStock, 'Adding:', quantity, 'Total would be:', currentStock + quantity);
-                if (currentStock + quantity > 10) {
+                if (currentStock + quantity > 20) {
                     return 'Not enough space in the destination section';
                 }
                 return null;
             }).catch(function(xhr, status, error) {
                 console.error('Error fetching destination stock:', xhr.responseText);
                 var currentStock = 0;
-                if (currentStock + quantity > 10) {
+                if (currentStock + quantity > 20) {
                     return 'Not enough space in the destination section';
                 }
                 return null;

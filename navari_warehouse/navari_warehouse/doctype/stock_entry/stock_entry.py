@@ -53,6 +53,7 @@ class StockEntry(WebsiteGenerator):
                 "doctype": "Stock Ledger Entry",
                 "product": self.product,
                 "transaction_type": self.stock_entry_type,
+                "from_section": self.from_section,
                 "to_section": self.to_section,
                 "quantity_in": quantity,
                 "rate": rate,

@@ -8,6 +8,7 @@
  "field_order": [
   "product",
   "transaction_type",
+  "from_section",
   "to_section",
   "date",
   "quantity_in",
@@ -40,18 +41,25 @@
   {
    "fieldname": "to_section",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "To Section"
   },
   {
    "fieldname": "quantity_in",
    "fieldtype": "Int",
    "label": "Quantity In"
+  },
+  {
+   "fieldname": "from_section",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "From Section"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-28 14:42:32.155586",
+ "modified": "2025-05-29 13:07:46.553869",
  "modified_by": "levdev78@gmail.com",
  "module": "Navari Warehouse",
  "name": "Stock Ledger Entry",
