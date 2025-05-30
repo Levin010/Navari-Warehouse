@@ -62,7 +62,7 @@ function processEntriesSequentially(data, index) {
             tbody.empty(); 
         }
         
-        const balanceClass = balanceData.balance_quantity <= 10 ? 'balance-quantity low-stock' : 'balance-quantity';
+        const balanceClass = balanceData.balance_quantity <= 5 ? 'balance-quantity low-stock' : 'balance-quantity';
         
         const row = `
             <tr data-index="${index}">

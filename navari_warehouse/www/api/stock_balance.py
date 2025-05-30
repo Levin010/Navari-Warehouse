@@ -10,8 +10,6 @@ def get_product_balance_at_time(product, transaction_date, creation_time):
     at a specific point in time (after a specific transaction)
     """
     try:
-        # Get all stock ledger entries for this product up to the specified time
-        # Note: quantity_in can be negative when stock is consumed
         ledger_entries = frappe.db.sql(
             """
             SELECT 
@@ -33,8 +31,6 @@ def get_product_balance_at_time(product, transaction_date, creation_time):
             as_dict=True,
         )
 
-        # Calculate running balance from all transactions up to this point
-        # Simply sum all quantity_in values (positive for stock in, negative for consumption)
         balance_quantity = 0
         for entry in ledger_entries:
             quantity_in = float(entry.get("quantity_in") or 0)
@@ -57,7 +53,6 @@ def get_current_product_balance(product):
     Get the current total balance quantity of a product across all warehouse sections
     """
     try:
-        # Sum all quantities from Warehouse Product Stock doctype
         total_quantity = frappe.db.sql(
             """
             SELECT COALESCE(SUM(quantity), 0) as total_quantity
@@ -85,7 +80,6 @@ def get_consolidated_stock_balance(balance_date):
     Get consolidated stock balance for all products as of a specific date
     """
     try:
-        # Get all unique products that have stock movements up to the balance date
         products_with_movements = frappe.db.sql(
             """
             SELECT DISTINCT product
@@ -101,17 +95,13 @@ def get_consolidated_stock_balance(balance_date):
         for product_row in products_with_movements:
             product = product_row.get("product")
 
-            # Calculate balance quantity from Stock Ledger Entry up to the balance date
             balance_quantity = calculate_product_balance_as_of_date(
                 product, balance_date
             )
 
-            # Only include products with non-zero balance
             if balance_quantity != 0:
-                # Get current rate from Product doctype
                 product_rate = frappe.db.get_value("Product", product, "rate") or 0
 
-                # Get warehouse sections where this product currently has stock
                 warehouse_sections = get_product_warehouse_sections(
                     product, balance_date
                 )
@@ -128,7 +118,6 @@ def get_consolidated_stock_balance(balance_date):
                     }
                 )
 
-        # Sort by product name
         consolidated_data.sort(key=lambda x: x["product"])
 
         return consolidated_data
@@ -170,8 +159,6 @@ def get_product_warehouse_sections(product, balance_date):
     warehouse section balances from Stock Ledger Entry if sections are tracked there
     """
     try:
-        # Get current warehouse sections with stock for this product
-        # Note: This gives current sections, not historical sections as of the balance date
         sections = frappe.db.sql(
             """
             SELECT warehouse_section
