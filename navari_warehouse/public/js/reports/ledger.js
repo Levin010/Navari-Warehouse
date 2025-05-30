@@ -1,20 +1,112 @@
 $(document).ready(function() {
     loadStockLedgerEntries();
+    
+    setupEventHandlers();
+    
+    setDefaultDateRange();
 });
+
+function setupEventHandlers() {
+    $('#applyFilters').on('click', function() {
+        loadStockLedgerEntries();
+    });
+    
+    $('#clearFilters').on('click', function() {
+        clearAllFilters();
+    });
+    
+    $('#productSearch').on('keypress', function(e) {
+        if (e.which === 13) { // Enter key
+            loadStockLedgerEntries();
+        }
+    });
+
+}
+
+function setDefaultDateRange() {
+    const today = new Date();
+    const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+    
+    $('#toDate').val(formatDateForInput(today));
+    $('#fromDate').val(formatDateForInput(thirtyDaysAgo));
+}
+
+function formatDateForInput(date) {
+    return date.toISOString().split('T')[0];
+}
+
+function getFilterParams() {
+    const filters = {};
+    
+    const productSearch = $('#productSearch').val().trim();
+    if (productSearch) {
+        filters.product = productSearch;
+    }
+    
+    const fromDate = $('#fromDate').val();
+    const toDate = $('#toDate').val();
+    
+    if (fromDate) {
+        filters.fromDate = fromDate + ' 00:00:00';
+    }
+    
+    if (toDate) {
+        filters.toDate = toDate + ' 23:59:59';
+    }
+    
+    return filters;
+}
+
+function buildApiFilters(filterParams) {
+    const apiFilters = [];
+    
+    if (filterParams.product) {
+        apiFilters.push(['product', 'like', `%${filterParams.product}%`]);
+    }
+    
+    if (filterParams.fromDate) {
+        apiFilters.push(['date', '>=', filterParams.fromDate]);
+    }
+    
+    if (filterParams.toDate) {
+        apiFilters.push(['date', '<=', filterParams.toDate]);
+    }
+    
+    return apiFilters;
+}
+
+
+
+function clearAllFilters() {
+    $('#productSearch').val('');
+    $('#fromDate').val('');
+    $('#toDate').val('');
+    loadStockLedgerEntries();
+}
 
 function loadStockLedgerEntries() {
     $('#loadingIndicator').show();
     $('#errorMessage').hide();
     $('#tableContainer').hide();
     $('#noDataMessage').hide();
-
+    
+    
+    const filterParams = getFilterParams();
+    const apiFilters = buildApiFilters(filterParams);
+    
+    const requestData = {
+        fields: '["name", "product", "transaction_type", "from_section", "to_section", "date", "quantity_in", "rate", "creation"]',
+        order_by: 'date desc, creation desc'
+    };
+    
+    if (apiFilters.length > 0) {
+        requestData.filters = JSON.stringify(apiFilters);
+    }
+    
     $.ajax({
         url: '/api/resource/Stock Ledger Entry',
         type: 'GET',
-        data: {
-            fields: '["name", "product", "transaction_type", "from_section", "to_section", "date", "quantity_in", "rate", "creation"]',
-            order_by: 'date desc, creation desc'
-        },
+        data: requestData,
         headers: {
             'Accept': 'application/json'
         },
@@ -22,6 +114,7 @@ function loadStockLedgerEntries() {
             $('#loadingIndicator').hide();
             
             if (response && response.data && response.data.length > 0) {
+                updateResultsSummary(response.data.length, filterParams);
                 populateTableWithMovingAverage(response.data);
                 $('#tableContainer').show();
             } else {
@@ -34,6 +127,34 @@ function loadStockLedgerEntries() {
             $('#errorMessage').show();
         }
     });
+}
+
+function updateResultsSummary(count, filterParams) {
+    let summaryText = `Showing ${count} entries`;
+    
+    const filterDescriptions = [];
+    
+    if (filterParams.product) {
+        filterDescriptions.push(`for product "${filterParams.product}"`);
+    }
+    
+    if (filterParams.fromDate && filterParams.toDate) {
+        const fromDate = new Date(filterParams.fromDate).toLocaleDateString();
+        const toDate = new Date(filterParams.toDate).toLocaleDateString();
+        filterDescriptions.push(`from ${fromDate} to ${toDate}`);
+    } else if (filterParams.fromDate) {
+        const fromDate = new Date(filterParams.fromDate).toLocaleDateString();
+        filterDescriptions.push(`from ${fromDate}`);
+    } else if (filterParams.toDate) {
+        const toDate = new Date(filterParams.toDate).toLocaleDateString();
+        filterDescriptions.push(`up to ${toDate}`);
+    }
+    
+    if (filterDescriptions.length > 0) {
+        summaryText += ' ' + filterDescriptions.join(' ');
+    }
+    
+    $('#resultsCount').text(summaryText);
 }
 
 function populateTableWithMovingAverage(data) {
@@ -146,7 +267,6 @@ function getProductBalanceQuantity(product, transaction_datetime) {
                 product: product,
                 transaction_date: transaction_datetime,
                 creation_time: '' 
-
             },
             headers: {
                 'Accept': 'application/json'
