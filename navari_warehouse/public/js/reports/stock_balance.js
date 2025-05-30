@@ -1,12 +1,9 @@
 $(document).ready(function() {
-    // Set default date to today
     const today = new Date().toISOString().split('T')[0];
     $('#balanceDate').val(today);
     
-    // Load initial report
     loadStockBalanceReport();
     
-    // Event handlers
     $('#refreshBalance').click(function() {
         loadStockBalanceReport();
     });
@@ -29,7 +26,6 @@ function loadStockBalanceReport() {
     $('#tableContainer').hide();
     $('#noDataMessage').hide();
     
-    // Update report date display
     const formattedDate = formatDateForDisplay(selectedDate);
     $('#reportDateDisplay').text(formattedDate);
     
@@ -87,7 +83,6 @@ function populateBalanceTable(data) {
         tbody.append(row);
     });
     
-    // Update summary
     $('#totalProducts').text(totalProducts);
     $('#totalValue').text(formatCurrency(totalValue));
 }
