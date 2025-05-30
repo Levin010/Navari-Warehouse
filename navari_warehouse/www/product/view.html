@@ -1,0 +1,231 @@
+{% extends "templates/includes/base.html" %}
+
+{% block content %}
+
+<div style="max-width: 1000px; margin: 30px auto; background-color: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 30px;">
+    <!-- Back Button -->
+    <div style="margin-bottom: 20px;">
+        <a href="/product" style="color: #007bff; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 5px;">
+            ← Back to Products
+        </a>
+    </div>
+
+    <!-- Product Header -->
+    <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #007bff; padding-bottom: 15px;">
+        <h2 id="productTitle" style="color: #333; font-weight: 700; margin: 0;">Product Details</h2>
+        <div style="display: flex; gap: 10px;">
+            <button 
+                id="editBtn"
+                onclick="openEditModal()"
+                style="padding: 8px 16px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; transition: background-color 0.3s ease;"
+                onmouseover="this.style.backgroundColor='#218838'"
+                onmouseout="this.style.backgroundColor='#28a745'"
+            >
+                Edit
+            </button>
+            <button 
+                id="deleteBtn"
+                onclick="confirmDelete()"
+                style="padding: 8px 16px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; transition: background-color 0.3s ease;"
+                onmouseover="this.style.backgroundColor='#c82333'"
+                onmouseout="this.style.backgroundColor='#dc3545'"
+            >
+                Delete
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingState" style="text-align: center; padding: 40px; color: #666;">
+        <div style="font-size: 18px;">Loading product details...</div>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" style="display: none; text-align: center; padding: 40px; color: #dc3545;">
+        <div style="font-size: 18px; margin-bottom: 10px;">Error loading product</div>
+        <div style="color: #666;">Please try refreshing the page or go back to the product list.</div>
+    </div>
+
+    <!-- Product Content -->
+    <div id="productContent" style="display: none;">
+        <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+            <!-- Product Image -->
+            <div style="flex: 1; min-width: 300px; max-width: 400px;">
+                <div style="border: 2px solid #ddd; border-radius: 8px; overflow: hidden; background-color: #f8f9fa;">
+                    <img 
+                        id="productImage" 
+                        src="" 
+                        alt="Product Image" 
+                        style="width: 100%; height: 300px; object-fit: cover; display: block;"
+                        onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjhGOUZBIi8+CjxwYXRoIGQ9Ik0xNzUgMTI1SDE2MFYxNDBIMTc1VjEyNVoiIGZpbGw9IiM2Qzc1N0QiLz4KPHBhdGggZD0iTTE1MCA5MEgxNDBWMTgwSDE1MFY5MFoiIGZpbGw9IiM2Qzc1N0QiLz4KPHBhdGggZD0iTTI2MCA5MEgyNTBWMTgwSDI2MFY5MFoiIGZpbGw9IiM2Qzc1N0QiLz4KPHBhdGggZD0iTTIyNSAxMjVIMjEwVjE0MEgyMjVWMTI1WiIgZmlsbD0iIzZDNzU3RCIvPgo8dGV4dCB4PSIyMDAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZDNzU3RCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0Ij5ObyBJbWFnZTwvdGV4dD4KPC9zdmc+'"
+                    >
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <div style="flex: 2; min-width: 400px;">
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; color: #555; font-weight: bold; font-size: 14px;">Product Name</label>
+                        <div id="productName" style="padding: 12px; background-color: #f8f9fa; border-radius: 4px; font-size: 16px; color: #333; min-height: 20px;"></div>
+                    </div>
+
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 150px;">
+                            <label style="display: block; margin-bottom: 8px; color: #555; font-weight: bold; font-size: 14px;">Product Type</label>
+                            <div id="productType" style="padding: 12px; background-color: #f8f9fa; border-radius: 4px; font-size: 16px; color: #333; min-height: 20px;"></div>
+                        </div>
+                        
+                        <div style="flex: 1; min-width: 150px;">
+                            <label style="display: block; margin-bottom: 8px; color: #555; font-weight: bold; font-size: 14px;">Rate</label>
+                            <div id="productRate" style="padding: 12px; background-color: #f8f9fa; border-radius: 4px; font-size: 16px; color: #333; min-height: 20px; font-weight: bold;"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; color: #555; font-weight: bold; font-size: 14px;">Description</label>
+                        <div id="productDescription" style="padding: 12px; background-color: #f8f9fa; border-radius: 4px; font-size: 16px; color: #333; min-height: 60px; line-height: 1.5;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto;">
+        <div style="padding: 20px; border-bottom: 1px solid #ddd;">
+            <h3 style="margin: 0; color: #333; font-weight: 700;">Edit Product</h3>
+        </div>
+        
+        <form id="editForm" style="padding: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <div>
+                    <label for="editProductName" style="display: block; margin-bottom: 8px; color: #555; font-weight: bold;">Product Name <span style="color: red;">*</span></label>
+                    <input 
+                        type="text" 
+                        id="editProductName"
+                        name="product_name" 
+                        required
+                        style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; background-color: white; transition: border-color 0.3s ease;"
+                        onfocus="this.style.borderColor='#007bff'"
+                        onblur="this.style.borderColor='#ddd'"
+                    >
+                </div>
+
+                <div>
+                    <label for="editProductImage" style="display: block; margin-bottom: 8px; color: #555; font-weight: bold;">Product Image URL</label>
+                    <input 
+                        type="url" 
+                        id="editProductImage"
+                        name="product_image" 
+                        style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; background-color: white; transition: border-color 0.3s ease;"
+                        onfocus="this.style.borderColor='#007bff'"
+                        onblur="this.style.borderColor='#ddd'"
+                    >
+                </div>
+
+                <div>
+                    <label for="editProductType" style="display: block; margin-bottom: 8px; color: #555; font-weight: bold;">Product Type</label>
+                    <input 
+                        type="text" 
+                        id="editProductType"
+                        name="product_type" 
+                        style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; background-color: white; transition: border-color 0.3s ease;"
+                        onfocus="this.style.borderColor='#007bff'"
+                        onblur="this.style.borderColor='#ddd'"
+                    >
+                </div>
+
+                <div>
+                    <label for="editRate" style="display: block; margin-bottom: 8px; color: #555; font-weight: bold;">Rate</label>
+                    <input 
+                        type="number" 
+                        id="editRate"
+                        name="rate" 
+                        step="0.01"
+                        min="0"
+                        style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; background-color: white; transition: border-color 0.3s ease;"
+                        onfocus="this.style.borderColor='#007bff'"
+                        onblur="this.style.borderColor='#ddd'"
+                    >
+                </div>
+
+                <div>
+                    <label for="editDescription" style="display: block; margin-bottom: 8px; color: #555; font-weight: bold;">Description</label>
+                    <textarea 
+                        id="editDescription"
+                        name="description" 
+                        rows="4"
+                        style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; background-color: white; transition: border-color 0.3s ease; resize: vertical;"
+                        onfocus="this.style.borderColor='#007bff'"
+                        onblur="this.style.borderColor='#ddd'"
+                    ></textarea>
+                </div>
+            </div>
+        </form>
+        
+        <div style="padding: 20px; border-top: 1px solid #ddd; display: flex; justify-content: flex-end; gap: 10px;">
+            <button 
+                type="button"
+                onclick="closeEditModal()"
+                style="padding: 10px 20px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.3s ease;"
+                onmouseover="this.style.backgroundColor='#5a6268'"
+                onmouseout="this.style.backgroundColor='#6c757d'"
+            >
+                Cancel
+            </button>
+            <button 
+                type="button"
+                onclick="saveProduct()"
+                style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; transition: background-color 0.3s ease;"
+                onmouseover="this.style.backgroundColor='#0056b3'"
+                onmouseout="this.style.backgroundColor='#007bff'"
+            >
+                Save Changes
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 90%; max-width: 400px;">
+        <div style="padding: 20px; text-align: center;">
+            <div style="color: #dc3545; font-size: 48px; margin-bottom: 15px;">⚠️</div>
+            <h3 style="margin: 0 0 15px 0; color: #333; font-weight: 700;">Are you sure?</h3>
+            <p style="margin: 0 0 20px 0; color: #666; line-height: 1.5;">
+                This will permanently delete the product "<span id="deleteProductName" style="font-weight: bold;"></span>". 
+                This action cannot be undone.
+            </p>
+            
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button 
+                    type="button"
+                    onclick="closeDeleteModal()"
+                    style="padding: 10px 20px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.3s ease;"
+                    onmouseover="this.style.backgroundColor='#5a6268'"
+                    onmouseout="this.style.backgroundColor='#6c757d'"
+                >
+                    Cancel
+                </button>
+                <button 
+                    type="button"
+                    onclick="deleteProduct()"
+                    style="padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; transition: background-color 0.3s ease;"
+                    onmouseover="this.style.backgroundColor='#c82333'"
+                    onmouseout="this.style.backgroundColor='#dc3545'"
+                >
+                    Yes, Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/assets/navari_warehouse/js/product/view.js"></script>
+{% endblock %}

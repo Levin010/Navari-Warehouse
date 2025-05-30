@@ -248,3 +248,16 @@ guest_access = [
 csrf_exempt_methods = [
     "/api/method/navari_warehouse.api.product.guest_upload_file",
 ]
+
+website_route_rules = [
+    {"from_route": "/product/<product_code>", "to_route": "product/view"},
+]
+# Website user can access these API routes
+website_user_access = [
+    "/api/resource/Product",
+    "/api/method/navari_warehouse.api.product.upload_file",
+]
+# Disable CSRF on custom methods if needed
+website_user_csrf_exempt_methods = [
+    "/api/method/navari_warehouse.api.product.upload_file",
+]

@@ -111,7 +111,7 @@ $(document).ready(function () {
                 </div>
                 
                 <a 
-                  href="/product/${product.name}" 
+                  href="/product/${product.product_code}"
                   style="display: inline-flex; align-items: center; gap: 6px; background: #4299e1; color: white; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 500; transition: all 0.2s ease;"
                   onmouseover="this.style.background = '#3182ce'; this.style.transform = 'scale(1.05)'"
                   onmouseout="this.style.background = '#4299e1'; this.style.transform = 'scale(1)'"
