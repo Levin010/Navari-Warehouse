@@ -10,6 +10,10 @@ function setupEventHandlers() {
     $('#applyFilters').on('click', function() {
         loadStockLedgerEntries();
     });
+
+    $('#downloadPDF').on('click', function() {
+        generateFormattedPDF();
+    });
     
     $('#clearFilters').on('click', function() {
         clearAllFilters();
@@ -319,4 +323,100 @@ function formatCurrency(amount) {
 
 function refreshLedger() {
     loadStockLedgerEntries();
+}
+
+function generateFormattedPDF() {
+    $('#downloadPDF').prop('disabled', true).text('Generating PDF...');
+    
+    const originalTable = document.getElementById('ledgerTable');
+    const tableClone = originalTable.cloneNode(true);
+    
+    const tempContainer = document.createElement('div');
+    tempContainer.style.padding = '20px';
+    tempContainer.style.backgroundColor = 'white';
+    tempContainer.style.fontFamily = 'Arial, sans-serif';
+    tempContainer.style.width = '1200px'; 
+    
+    const title = document.createElement('h2');
+    title.textContent = 'Stock Ledger Report';
+    title.style.marginBottom = '20px';
+    title.style.textAlign = 'center';
+    title.style.color = '#333';
+    
+    const summary = document.createElement('div');
+    summary.innerHTML = document.getElementById('resultsCount').textContent;
+    summary.style.marginBottom = '15px';
+    summary.style.fontSize = '14px';
+    summary.style.fontWeight = 'bold';
+    
+    const dateInfo = document.createElement('div');
+    dateInfo.textContent = `Generated on: ${new Date().toLocaleString()}`;
+    dateInfo.style.fontSize = '12px';
+    dateInfo.style.color = '#666';
+    dateInfo.style.marginBottom = '20px';
+    
+    tableClone.style.width = '100%';
+    tableClone.style.fontSize = '11px';
+    tableClone.style.borderCollapse = 'collapse';
+    
+    tempContainer.appendChild(title);
+    tempContainer.appendChild(dateInfo);
+    tempContainer.appendChild(summary);
+    tempContainer.appendChild(tableClone);
+    
+    tempContainer.style.position = 'absolute';
+    tempContainer.style.left = '-9999px';
+    tempContainer.style.top = '0';
+    document.body.appendChild(tempContainer);
+    
+    html2canvas(tempContainer, {
+        scale: 1.5,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        width: tempContainer.scrollWidth,
+        height: tempContainer.scrollHeight
+    }).then(canvas => {
+        document.body.removeChild(tempContainer);
+        
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('landscape', 'mm', 'a4');
+        
+        const imgWidth = 297; 
+        const pageHeight = 210; 
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+        
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+        
+        const fileName = `stock-ledger-report-${new Date().toISOString().split('T')[0]}.pdf`;
+        const pdfBlob = pdf.output('blob');
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(pdfBlob);
+        link.download = fileName;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+        
+        $('#downloadPDF').prop('disabled', false).text('Download PDF');
+        
+    }).catch(error => {
+        if (document.body.contains(tempContainer)) {
+            document.body.removeChild(tempContainer);
+        }
+        console.error('Error generating PDF:', error);
+        alert('Error generating PDF. Please try again.');
+        $('#downloadPDF').prop('disabled', false).text('Download PDF');
+    });
 }
