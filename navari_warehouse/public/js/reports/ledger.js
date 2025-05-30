@@ -335,14 +335,22 @@ function generateFormattedPDF() {
     tempContainer.style.padding = '20px';
     tempContainer.style.backgroundColor = 'white';
     tempContainer.style.fontFamily = 'Arial, sans-serif';
-    tempContainer.style.width = '1200px'; 
-    
-    const title = document.createElement('h2');
-    title.textContent = 'Stock Ledger Report';
-    title.style.marginBottom = '20px';
-    title.style.textAlign = 'center';
-    title.style.color = '#333';
-    
+    tempContainer.style.width = '900px'; 
+
+    const title1 = document.createElement('h2');
+    title1.textContent = 'X Electronics Warehouse';
+    title1.style.marginBottom = '10px';
+    title1.style.textAlign = 'center';
+    title1.style.color = '#333';
+    title1.style.fontWeight = 'bold';
+
+    const title2 = document.createElement('h3');
+    title2.textContent = 'Stock Ledger Report';
+    title2.style.marginBottom = '20px';
+    title2.style.textAlign = 'center';
+    title2.style.color = '#333';
+    title2.style.fontWeight = '600';
+
     const summary = document.createElement('div');
     summary.innerHTML = document.getElementById('resultsCount').textContent;
     summary.style.marginBottom = '15px';
@@ -359,7 +367,8 @@ function generateFormattedPDF() {
     tableClone.style.fontSize = '11px';
     tableClone.style.borderCollapse = 'collapse';
     
-    tempContainer.appendChild(title);
+    tempContainer.appendChild(title1);
+    tempContainer.appendChild(title2);
     tempContainer.appendChild(dateInfo);
     tempContainer.appendChild(summary);
     tempContainer.appendChild(tableClone);
