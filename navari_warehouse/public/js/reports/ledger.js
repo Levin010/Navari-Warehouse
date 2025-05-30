@@ -53,7 +53,6 @@ function processEntriesSequentially(data, index) {
     const entry = data[index];
     const tbody = $('#ledgerTableBody');
     
-    // Process both moving average and balance quantity
     Promise.all([
         calculateMovingAverage(entry.product, entry.name),
         getProductBalanceQuantity(entry.product, entry.date)
@@ -73,9 +72,9 @@ function processEntriesSequentially(data, index) {
                 <td>${entry.from_section || '-'}</td>
                 <td>${entry.to_section || '-'}</td>
                 <td style="text-align: right;">${formatNumber(entry.quantity_in)}</td>
+                <td style="text-align: right;" class="${balanceClass}">${formatNumber(balanceData.balance_quantity)}</td>
                 <td style="text-align: right;">${formatCurrency(entry.rate)}</td>
                 <td style="text-align: right;">${formatCurrency(movingAvgData.moving_average_rate)}</td>
-                <td style="text-align: right;" class="${balanceClass}">${formatNumber(balanceData.balance_quantity)}</td>
             </tr>
         `;
         tbody.append(row);
@@ -97,8 +96,8 @@ function processEntriesSequentially(data, index) {
                 <td>${entry.from_section || '-'}</td>
                 <td>${entry.to_section || '-'}</td>
                 <td style="text-align: right;">${formatNumber(entry.quantity_in)}</td>
-                <td style="text-align: right;">${formatCurrency(entry.rate)}</td>
                 <td style="text-align: right; color: #dc3545;">Error</td>
+                <td style="text-align: right;">${formatCurrency(entry.rate)}</td>
                 <td style="text-align: right; color: #dc3545;">Error</td>
             </tr>
         `;
@@ -146,7 +145,8 @@ function getProductBalanceQuantity(product, transaction_datetime) {
             data: {
                 product: product,
                 transaction_date: transaction_datetime,
-                creation_time: '' // Not needed since we're using the datetime field
+                creation_time: '' 
+
             },
             headers: {
                 'Accept': 'application/json'
