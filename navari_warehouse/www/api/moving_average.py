@@ -5,18 +5,8 @@ from frappe import _
 
 @frappe.whitelist()
 def get_moving_average_valuation(product, entry_name):
-    """
-    Calculate moving average valuation for a product up to and including a specific entry
 
-    Args:
-        product (str): Product name
-        entry_name (str): Name of the current Stock Ledger Entry
-
-    Returns:
-        dict: Contains moving_average_rate, total_value, total_quantity
-    """
     try:
-        # Get the current entry's creation timestamp
         current_entry = frappe.db.get_value(
             "Stock Ledger Entry", entry_name, ["creation"], as_dict=True
         )
@@ -29,8 +19,6 @@ def get_moving_average_valuation(product, entry_name):
                 "error": "Entry not found",
             }
 
-        # SQL query to calculate moving average valuation
-        # Include all entries up to and including the current entry (by creation time)
         sql_query = """
             SELECT 
                 COALESCE(SUM(quantity_in * rate), 0) as total_value,
@@ -57,7 +45,6 @@ def get_moving_average_valuation(product, entry_name):
         total_value = float(data.get("total_value", 0))
         total_quantity = float(data.get("total_quantity", 0))
 
-        # Calculate moving average rate
         moving_average_rate = 0
         if total_quantity > 0:
             moving_average_rate = total_value / total_quantity

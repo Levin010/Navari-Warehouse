@@ -1,7 +1,6 @@
 $(document).ready(function () {
   let searchTimeout;
   
-  // Initial load
   fetchProducts();
   
   document.getElementById("search").addEventListener("input", function () {
@@ -65,7 +64,6 @@ $(document).ready(function () {
             animation-delay: ${index * 0.1}s;
           `;
           
-          // Add hover effects
           card.addEventListener('mouseenter', function() {
             this.style.transform = 'translateY(-8px)';
             this.style.boxShadow = '0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04)';
@@ -76,10 +74,9 @@ $(document).ready(function () {
             this.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1)';
           });
           
-          // Product image
           const imageUrl = product.product_image ? 
             (product.product_image.startsWith('/') ? product.product_image : `/files/${product.product_image}`) : 
-            '/assets/frappe/images/ui/bubble-tea.svg'; // Fallback image
+            '/assets/frappe/images/ui/bubble-tea.svg';
           
           card.innerHTML = `
             <div style="position: relative; width: 100%; height: 200px; overflow: hidden; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
@@ -111,7 +108,7 @@ $(document).ready(function () {
                 </div>
                 
                 <a 
-                  href="/product/${product.product_code}"
+                  href="/product/${product.name}"
                   style="display: inline-flex; align-items: center; gap: 6px; background: #4299e1; color: white; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 500; transition: all 0.2s ease;"
                   onmouseover="this.style.background = '#3182ce'; this.style.transform = 'scale(1.05)'"
                   onmouseout="this.style.background = '#4299e1'; this.style.transform = 'scale(1)'"
@@ -125,7 +122,6 @@ $(document).ready(function () {
             </div>
           `;
           
-          // Make entire card clickable
           card.addEventListener('click', function(e) {
             if (e.target.tagName !== 'A') {
               window.location.href = `/product/${product.name}`;
@@ -139,7 +135,6 @@ $(document).ready(function () {
         showLoading(false);
         console.error("Error fetching products:", error);
         
-        // Show error message
         const grid = document.getElementById("product-grid");
         grid.innerHTML = `
           <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #e53e3e;">

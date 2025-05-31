@@ -250,6 +250,7 @@ csrf_exempt_methods = [
 ]
 
 website_route_rules = [
+    {"from_route": "/product/new", "to_route": "product/new"},
     {"from_route": "/product/<product_code>", "to_route": "product/view"},
 ]
 # Website user can access these API routes

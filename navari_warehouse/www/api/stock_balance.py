@@ -5,10 +5,7 @@ from datetime import datetime
 
 @frappe.whitelist()
 def get_product_balance_at_time(product, transaction_date, creation_time):
-    """
-    Get the total balance quantity of a product across all warehouse sections
-    at a specific point in time (after a specific transaction)
-    """
+
     try:
         ledger_entries = frappe.db.sql(
             """
@@ -49,9 +46,7 @@ def get_product_balance_at_time(product, transaction_date, creation_time):
 
 @frappe.whitelist()
 def get_current_product_balance(product):
-    """
-    Get the current total balance quantity of a product across all warehouse sections
-    """
+
     try:
         total_quantity = frappe.db.sql(
             """
@@ -76,9 +71,7 @@ def get_current_product_balance(product):
 
 @frappe.whitelist()
 def get_consolidated_stock_balance(balance_date):
-    """
-    Get consolidated stock balance for all products as of a specific date
-    """
+
     try:
         products_with_movements = frappe.db.sql(
             """
@@ -128,9 +121,7 @@ def get_consolidated_stock_balance(balance_date):
 
 
 def calculate_product_balance_as_of_date(product, balance_date):
-    """
-    Calculate product balance as of a specific date using Stock Ledger Entry
-    """
+
     try:
         ledger_entries = frappe.db.sql(
             """
@@ -153,11 +144,7 @@ def calculate_product_balance_as_of_date(product, balance_date):
 
 
 def get_product_warehouse_sections(product, balance_date):
-    """
-    Get warehouse sections where a product has stock based on current Warehouse Product Stock
-    This is a simplified approach - in reality, you might need to reconstruct
-    warehouse section balances from Stock Ledger Entry if sections are tracked there
-    """
+
     try:
         sections = frappe.db.sql(
             """

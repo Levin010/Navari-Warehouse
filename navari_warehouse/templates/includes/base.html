@@ -18,28 +18,39 @@
       <div style="padding: 1rem; font-weight: bold; font-size: 1.25rem; border-bottom: 1px solid #e5e7eb;">MAIN MENU</div>
       <nav style="padding: 1rem;">
         <a
-          href="#"
-          style="display: block; padding: 0.25rem 0.5rem; border-radius: 0.25rem;"
+          href="/dashboard/"
+          id="dashboard-link"
+          style="display: block; padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; color: #374151; transition: all 0.2s ease;"
+          onmouseover="if(!this.classList.contains('active')) { this.style.backgroundColor='#f3f4f6'; }"
+          onmouseout="if(!this.classList.contains('active')) { this.style.backgroundColor='transparent'; }"
         >Dashboard</a>
         <a
-          href="#"
-          style="display: block; padding: 0.25rem 0.5rem; border-radius: 0.25rem;"
+          href="/stock-entry/"
+          id="stock-entry-link"
+          style="display: block; padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; color: #374151; transition: all 0.2s ease;"
+          onmouseover="if(!this.classList.contains('active')) { this.style.backgroundColor='#f3f4f6'; }"
+          onmouseout="if(!this.classList.contains('active')) { this.style.backgroundColor='transparent'; }"
         >Stock Entry</a>
         <a
-          href="#"
-          style="display: block; padding: 0.25rem 0.5rem; border-radius: 0.25rem;"
+          href="/stock-ledger/"
+          id="stock-ledger-link"
+          style="display: block; padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; color: #374151; transition: all 0.2s ease;"
+          onmouseover="if(!this.classList.contains('active')) { this.style.backgroundColor='#f3f4f6'; }"
+          onmouseout="if(!this.classList.contains('active')) { this.style.backgroundColor='transparent'; }"
         >Stock Entry Ledger</a>
         <a
-          href="#"
-          style="display: block; padding: 0.25rem 0.5rem; border-radius: 0.25rem;"
+          href="/product/"
+          id="product-link"
+          style="display: block; padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; color: #374151; transition: all 0.2s ease;"
+          onmouseover="if(!this.classList.contains('active')) { this.style.backgroundColor='#f3f4f6'; }"
+          onmouseout="if(!this.classList.contains('active')) { this.style.backgroundColor='transparent'; }"
         >Products</a>
         <a
-          href="#"
-          style="display: block; padding: 0.25rem 0.5rem; border-radius: 0.25rem;"
-        >Warehouse Overview</a>
-        <a
-          href="#"
-          style="display: block; padding: 0.25rem 0.5rem; border-radius: 0.25rem;" 
+          href="/reports/"
+          id="reports-link"
+          style="display: block; padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; color: #374151; transition: all 0.2s ease;"
+          onmouseover="if(!this.classList.contains('active')) { this.style.backgroundColor='#f3f4f6'; }"
+          onmouseout="if(!this.classList.contains('active')) { this.style.backgroundColor='transparent'; }"
         >Reports</a>
       </nav>
     </div>
@@ -54,6 +65,35 @@
         {% block content %}{% endblock %}
       </main>
     </div>
+
+    <script>
+        function setActiveLink() {
+            const currentPath = window.location.pathname;
+            const links = document.querySelectorAll('#sidebar nav a');
+            
+            links.forEach(link => {
+                link.classList.remove('active');
+                link.style.backgroundColor = 'transparent';
+                link.style.color = '#374151';
+            });
+            
+            links.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                    link.style.backgroundColor = '#dbeafe';
+                    link.style.color = '#2563eb';
+                }
+            });
+        }
+        
+        setActiveLink();
+        
+        document.querySelectorAll('#sidebar nav a').forEach(link => {
+            link.addEventListener('click', function() {
+                setActiveLink();
+            });
+        });
+    </script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/assets/navari_warehouse/js/global/sidebar.js"></script>
