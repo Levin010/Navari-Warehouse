@@ -8,6 +8,7 @@ function loadDashboardData() {
 }
 
 function loadDashboardCards() {
+    $('#total-inventory-count').text('Loading...');
     $('#total-products-count').text('Loading...');
     $('#products-in-stock-count').text('Loading...');
     $('#products-out-stock-count').text('Loading...');
@@ -23,7 +24,7 @@ function loadDashboardCards() {
         calculateAndUpdateCards(products, warehouseStock);
     }).catch(function(error) {
         console.error('Error loading dashboard data:', error);
-        // Show error state
+        $('#total-inventory-count').text('Error');
         $('#total-products-count').text('Error');
         $('#products-in-stock-count').text('Error');
         $('#products-out-stock-count').text('Error');
@@ -77,6 +78,11 @@ function fetchWarehouseProductStock() {
 
 function calculateAndUpdateCards(products, warehouseStock) {
     const totalProducts = products.length;
+
+    let totalQuantityInWarehouse = 0;
+    warehouseStock.forEach(function(stock) {
+        totalQuantityInWarehouse += stock.quantity || 0;
+    });
     
     const productStockMap = {};
     warehouseStock.forEach(function(stock) {
@@ -103,7 +109,7 @@ function calculateAndUpdateCards(products, warehouseStock) {
         }
     });
     
-    // Update the cards
+    updateTotalInventoryCountCard(totalQuantityInWarehouse);
     updateTotalProductsCard(totalProducts);
     updateProductsInStockCard(productsInStock);
     updateProductsOutOfStockCard(productsOutOfStock);
@@ -194,6 +200,10 @@ function formatCurrency(amount) {
 
 function refreshDashboard() {
     loadDashboardData();
+}
+
+function updateTotalInventoryCountCard(count) {
+    $('#total-inventory-count').text(formatNumber(count));
 }
 
 function updateTotalProductsCard(count) {
