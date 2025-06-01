@@ -20,7 +20,7 @@
 
 ![Image](https://github.com/user-attachments/assets/cef22604-1487-4164-9435-f4f6c0b457c4)
 
-### Stock Ledger Entry
+### Stock Ledger Entries (which are generated from Stock Entries)
 
 ![Image](https://github.com/user-attachments/assets/509180c8-359e-4809-90a7-2ff38d72f0af)
 
