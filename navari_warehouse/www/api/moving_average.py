@@ -1,4 +1,3 @@
-# api/moving_average.py
 import frappe
 from frappe import _
 
