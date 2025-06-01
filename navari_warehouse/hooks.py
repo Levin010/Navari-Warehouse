@@ -250,10 +250,11 @@ csrf_exempt_methods = [
 ]
 
 website_route_rules = [
+    {"from_route": "/", "to_route": "dashboard"},
     {"from_route": "/product/new", "to_route": "product/new"},
     {"from_route": "/product/<product_code>", "to_route": "product/view"},
 ]
-# Website user can access these API routes
+
 website_user_access = [
     "/api/resource/Product",
     "/api/method/navari_warehouse.api.product.upload_file",
