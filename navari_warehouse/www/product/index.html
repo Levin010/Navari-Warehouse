@@ -8,22 +8,34 @@
         <p style="color: #718096; font-size: 16px; margin: 0;">All current Warehouse products</p>
     </div>
 
-    <div style="position: relative; margin-bottom: 32px; max-width: 500px;">
-        <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #a0aec0; z-index: 1;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.35-4.35"></path>
-            </svg>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; gap: 20px;">
+        <div style="position: relative; flex: 1; max-width: 500px;">
+            <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #a0aec0; z-index: 1;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+            </div>
+            <input
+                type="text"
+                id="search"
+                placeholder="Search products..."
+                style="width: 100%; padding: 12px 16px 12px 44px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 16px; transition: all 0.2s ease; background: #ffffff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); outline: none;"
+                onkeyup="this.style.borderColor = this.value ? '#4299e1' : '#e2e8f0'"
+                onfocus="this.style.borderColor = '#4299e1'; this.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)'"
+                onblur="this.style.borderColor = this.value ? '#4299e1' : '#e2e8f0'; this.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)'"
+            />
         </div>
-        <input
-            type="text"
-            id="search"
-            placeholder="Search products..."
-            style="width: 100%; padding: 12px 16px 12px 44px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 16px; transition: all 0.2s ease; background: #ffffff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); outline: none;"
-            onkeyup="this.style.borderColor = this.value ? '#4299e1' : '#e2e8f0'"
-            onfocus="this.style.borderColor = '#4299e1'; this.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)'"
-            onblur="this.style.borderColor = this.value ? '#4299e1' : '#e2e8f0'; this.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)'"
-        />
+        
+        <button 
+            type="button"
+            onclick="window.location.href = '/product/new'"
+            style="padding: 12px 30px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background-color 0.3s ease; white-space: nowrap;"
+            onmouseover="this.style.backgroundColor='#0056b3'"
+            onmouseout="this.style.backgroundColor='#007bff'"
+        >
+            Create New Product
+        </button>
     </div>
 
     <div id="loading" style="display: none; text-align: center; padding: 40px; color: #718096;">
